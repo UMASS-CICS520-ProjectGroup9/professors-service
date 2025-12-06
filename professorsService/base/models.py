@@ -6,6 +6,7 @@ class Professor(models.Model):
     email = models.EmailField()
     office = models.CharField(max_length=50)
     rating = models.FloatField(default=0.0)
+    creator_id = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.name
