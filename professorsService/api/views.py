@@ -58,17 +58,25 @@ def createReview(request, pk):
     except Professor.DoesNotExist:
         return Response({'error': 'Professor not found'}, status=status.HTTP_404_NOT_FOUND)
 
+    # If user already reviewed, update the review
     data = request.data.copy()
     data['professor'] = professor.id
-    
-    serializer = ReviewSerializer(data=data)
-    if serializer.is_valid():
-        serializer.save()
-        
-        # Update professor average rating
-        avg_rating = professor.reviews.aggregate(Avg('rating'))['rating__avg']
-        professor.rating = round(avg_rating, 1) if avg_rating else 0.0
-        professor.save()
-        
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    review = Review.objects.filter(professor=professor, creator_id=request.user.id).first()
+    if review:
+        serializer = ReviewSerializer(review, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            avg_rating = professor.reviews.aggregate(Avg('rating'))['rating__avg']
+            professor.rating = round(avg_rating, 1) if avg_rating else 0.0
+            professor.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        serializer = ReviewSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save(creator_id=request.user.id)
+            avg_rating = professor.reviews.aggregate(Avg('rating'))['rating__avg']
+            professor.rating = round(avg_rating, 1) if avg_rating else 0.0
+            professor.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

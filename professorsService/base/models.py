@@ -14,6 +14,7 @@ class Professor(models.Model):
 class Review(models.Model):
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='reviews')
     author = models.CharField(max_length=100)
+    creator_id = models.IntegerField(null=True, blank=True)
     rating = models.IntegerField()
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
