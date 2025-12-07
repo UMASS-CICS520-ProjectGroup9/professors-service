@@ -18,7 +18,6 @@ iniconfig==2.3.0
 Jinja2==3.1.6
 livereload==2.7.1
 MarkupSafe==3.0.3
-packaging @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_packaging_1745345660/work
 pluggy==1.6.0
 Pygments==2.19.2
 PyJWT==2.10.1
