@@ -7,6 +7,16 @@ This is the Sphinx documentation for the professors-service microservice.
 
 Test Report
 -----------
+`View the latest test report <../../test_report.html>`_
+professors-service documentation
+===============================
+
+Overview
+--------
+This is the Sphinx documentation for the professors-service microservice.
+
+Test Report
+-----------
 `View the latest test report <test_report.html>`_
 .. professors-service documentation master file, created by
    sphinx-quickstart on Wed Dec 10 14:21:03 2025.
