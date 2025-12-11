@@ -51,6 +51,7 @@ def deleteProfessor(request, pk):
     except Professor.DoesNotExist:
         return Response({'error': 'Professor not found'}, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['POST'])
 @permission_classes([IsStudent])
 def createReview(request, pk):
@@ -81,3 +82,28 @@ def createReview(request, pk):
             professor.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# DELETE review endpoint
+from rest_framework.permissions import IsAuthenticated
+@api_view(['DELETE'])
+@permission_classes([IsStudent])
+def deleteReview(request, prof_pk, review_pk):
+    try:
+        professor = Professor.objects.get(pk=prof_pk)
+    except Professor.DoesNotExist:
+        return Response({'error': 'Professor not found'}, status=status.HTTP_404_NOT_FOUND)
+    try:
+        review = Review.objects.get(pk=review_pk, professor=professor)
+    except Review.DoesNotExist:
+        return Response({'error': 'Review not found'}, status=status.HTTP_404_NOT_FOUND)
+    # Only allow the review's creator or admin/staff to delete
+    user_role = getattr(request.user, 'role', None)
+    if review.creator_id != request.user.id and user_role not in ["ADMIN", "STAFF"]:
+        return Response({'error': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+    review.delete()
+    # Update professor's average rating
+    avg_rating = professor.reviews.aggregate(Avg('rating'))['rating__avg']
+    professor.rating = round(avg_rating, 1) if avg_rating else 0.0
+    professor.save()
+    return Response(status=status.HTTP_204_NO_CONTENT)

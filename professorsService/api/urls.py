@@ -7,4 +7,5 @@ urlpatterns = [
     path('professors/<int:pk>/', views.getProfessor, name='getProfessor'),
     path('professors/<int:pk>/delete/', views.deleteProfessor, name='deleteProfessor'),
     path('professors/<int:pk>/review/', views.createReview, name='createReview'),
+    path('professors/<int:prof_pk>/review/<int:review_pk>/delete/', views.deleteReview, name='deleteReview'),
 ]
