@@ -10,21 +10,35 @@ from rest_framework.response import Response
 @api_view(['GET'])
 @permission_classes([IsStudent])
 def getProfessors(request):
+    """
+    Retrieve a list of professors, optionally filtered by query.
+
+    **GET**: Returns a list of professors.
+
+    Query Parameters:
+        - query: Filter by professor name or department (case-insensitive, partial match)
+    """
     query = request.GET.get('query', '')
     professors = Professor.objects.all()
-    
     if query:
         professors = professors.filter(
             Q(name__icontains=query) | 
             Q(department__icontains=query)
         )
-        
     serializer = ProfessorSerializer(professors, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([IsStudent])
 def getProfessor(request, pk):
+    """
+    Retrieve a single professor by primary key (pk).
+
+    **GET**: Returns professor details or 404 if not found.
+
+    Path Parameters:
+        - pk: Professor primary key (integer)
+    """
     try:
         professor = Professor.objects.get(pk=pk)
         serializer = ProfessorSerializer(professor)
@@ -35,6 +49,18 @@ def getProfessor(request, pk):
 @api_view(['POST'])
 @permission_classes([IsStaff])
 def createProfessor(request):
+    """
+    Create a new professor.
+
+    **POST**: Creates a new professor record.
+
+    Request Body:
+        - name: string
+        - department: string
+        - ... (other fields as required by ProfessorSerializer)
+
+    Returns the created professor data on success.
+    """
     serializer = ProfessorSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save(creator_id=request.user.id)
@@ -44,6 +70,16 @@ def createProfessor(request):
 @api_view(['DELETE'])
 @permission_classes([IsStaff])
 def deleteProfessor(request, pk):
+    """
+    Delete a professor by primary key (pk).
+
+    **DELETE**: Deletes the specified professor.
+
+    Path Parameters:
+        - pk: Professor primary key (integer)
+
+    Returns 204 No Content on success, or 404 if the professor does not exist.
+    """
     try:
         professor = Professor.objects.get(pk=pk)
         professor.delete()
@@ -55,6 +91,21 @@ def deleteProfessor(request, pk):
 @api_view(['POST'])
 @permission_classes([IsStudent])
 def createReview(request, pk):
+    """
+    Create or update a review for a professor.
+
+    **POST**: If the user has already reviewed, updates the review. Otherwise, creates a new review.
+
+    Path Parameters:
+        - pk: Professor primary key (integer)
+
+    Request Body:
+        - rating: integer
+        - comment: string
+        - ... (other fields as required by ReviewSerializer)
+
+    Returns the created or updated review data on success.
+    """
     try:
         professor = Professor.objects.get(pk=pk)
     except Professor.DoesNotExist:
@@ -89,6 +140,17 @@ from rest_framework.permissions import IsAuthenticated
 @api_view(['DELETE'])
 @permission_classes([IsStudent])
 def deleteReview(request, prof_pk, review_pk):
+    """
+    Delete a review for a professor.
+
+    **DELETE**: Deletes the specified review if the user is the creator or has admin/staff role.
+
+    Path Parameters:
+        - prof_pk: Professor primary key (integer)
+        - review_pk: Review primary key (integer)
+
+    Returns 204 No Content on success, 404 if not found, or 403 if permission denied.
+    """
     try:
         professor = Professor.objects.get(pk=prof_pk)
     except Professor.DoesNotExist:

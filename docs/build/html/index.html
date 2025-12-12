@@ -39,32 +39,102 @@
 </section>
 <section id="test-report">
 <h2>Test Report<a class="headerlink" href="#test-report" title="Link to this heading">¶</a></h2>
-<p><a class="reference external" href="../../test_report.html">View the latest test report</a>
-professors-service documentation
-===============================</p>
+<p><a class="reference external" href="test_report.html">View the latest test report</a></p>
 </section>
-<section id="id1">
-<h2>Overview<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
-<p>This is the Sphinx documentation for the professors-service microservice.</p>
+<section id="module-api.views">
+<span id="api-documentation"></span><h2>API Documentation<a class="headerlink" href="#module-api.views" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="api.views.createProfessor">
+<span class="sig-prename descclassname"><span class="pre">api.views.</span></span><span class="sig-name descname"><span class="pre">createProfessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.createProfessor" title="Link to this definition">¶</a></dt>
+<dd><p>Create a new professor.</p>
+<p><strong>POST</strong>: Creates a new professor record.</p>
+<dl class="simple">
+<dt>Request Body:</dt><dd><ul class="simple">
+<li><p>name: string</p></li>
+<li><p>department: string</p></li>
+<li><p>… (other fields as required by ProfessorSerializer)</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns the created professor data on success.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.views.createReview">
+<span class="sig-prename descclassname"><span class="pre">api.views.</span></span><span class="sig-name descname"><span class="pre">createReview</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.createReview" title="Link to this definition">¶</a></dt>
+<dd><p>Create or update a review for a professor.</p>
+<p><strong>POST</strong>: If the user has already reviewed, updates the review. Otherwise, creates a new review.</p>
+<dl class="simple">
+<dt>Path Parameters:</dt><dd><ul class="simple">
+<li><p>pk: Professor primary key (integer)</p></li>
+</ul>
+</dd>
+<dt>Request Body:</dt><dd><ul class="simple">
+<li><p>rating: integer</p></li>
+<li><p>comment: string</p></li>
+<li><p>… (other fields as required by ReviewSerializer)</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns the created or updated review data on success.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.views.deleteProfessor">
+<span class="sig-prename descclassname"><span class="pre">api.views.</span></span><span class="sig-name descname"><span class="pre">deleteProfessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.deleteProfessor" title="Link to this definition">¶</a></dt>
+<dd><p>Delete a professor by primary key (pk).</p>
+<p><strong>DELETE</strong>: Deletes the specified professor.</p>
+<dl class="simple">
+<dt>Path Parameters:</dt><dd><ul class="simple">
+<li><p>pk: Professor primary key (integer)</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns 204 No Content on success, or 404 if the professor does not exist.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.views.deleteReview">
+<span class="sig-prename descclassname"><span class="pre">api.views.</span></span><span class="sig-name descname"><span class="pre">deleteReview</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.deleteReview" title="Link to this definition">¶</a></dt>
+<dd><p>Delete a review for a professor.</p>
+<p><strong>DELETE</strong>: Deletes the specified review if the user is the creator or has admin/staff role.</p>
+<dl class="simple">
+<dt>Path Parameters:</dt><dd><ul class="simple">
+<li><p>prof_pk: Professor primary key (integer)</p></li>
+<li><p>review_pk: Review primary key (integer)</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns 204 No Content on success, 404 if not found, or 403 if permission denied.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.views.getProfessor">
+<span class="sig-prename descclassname"><span class="pre">api.views.</span></span><span class="sig-name descname"><span class="pre">getProfessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.getProfessor" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve a single professor by primary key (pk).</p>
+<p><strong>GET</strong>: Returns professor details or 404 if not found.</p>
+<dl class="simple">
+<dt>Path Parameters:</dt><dd><ul class="simple">
+<li><p>pk: Professor primary key (integer)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="api.views.getProfessors">
+<span class="sig-prename descclassname"><span class="pre">api.views.</span></span><span class="sig-name descname"><span class="pre">getProfessors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.getProfessors" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve a list of professors, optionally filtered by query.</p>
+<p><strong>GET</strong>: Returns a list of professors.</p>
+<dl class="simple">
+<dt>Query Parameters:</dt><dd><ul class="simple">
+<li><p>query: Filter by professor name or department (case-insensitive, partial match)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="id2">
-<h2>Test Report<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
-<p><a class="reference external" href="test_report.html">View the latest test report</a>
-.. professors-service documentation master file, created by</p>
-<blockquote>
-<div><p>sphinx-quickstart on Wed Dec 10 14:21:03 2025.
-You can adapt this file completely to your liking, but it should at least
-contain the root <cite>toctree</cite> directive.</p>
-</div></blockquote>
-</section>
-</section>
-<section id="id4">
-<h1>professors-service documentation<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h1>
-<p>Add your content using <code class="docutils literal notranslate"><span class="pre">reStructuredText</span></code> syntax. See the
-<a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">reStructuredText</a>
-documentation for details.</p>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 
 
